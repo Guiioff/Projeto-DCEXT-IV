@@ -17,7 +17,7 @@ public class UsuarioControlador {
   @Autowired private UsuarioServico usuarioServico;
 
   @PostMapping("/cadastro")
-  public ResponseEntity<String> cadastrarUsuário(@RequestBody UsuarioDTO usuarioDTO) {
+  public ResponseEntity<String> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
     this.usuarioServico.cadastrarUsuario(usuarioDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso");
   }
