@@ -1,7 +1,9 @@
 package br.com.projeto.servicos;
 
 import br.com.projeto.dtos.UsuarioDTO;
+import br.com.projeto.modelos.Usuario;
 import br.com.projeto.repositorios.UsuarioRepositorio;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public class UsuarioServico {
       throw new RuntimeException("O email do usuário não pode ser nulo ou vazio");
     }
 
-    if (usuarioRepositorio.findByEmail(usuarioDTO.email()).isPresent()) {
+    if (this.usuarioRepositorio.findByEmail(usuarioDTO.email()).isPresent()) {
       throw new RuntimeException("O email informado já existe");
     }
 
@@ -35,5 +37,10 @@ public class UsuarioServico {
     if (usuarioDTO.dataNascimento() == null) {
       throw new RuntimeException("A data de nascimento do usuário não pode ser nula");
     }
+
+    Usuario usuario = new Usuario();
+    BeanUtils.copyProperties(usuarioDTO, usuario);
+
+    this.usuarioRepositorio.save(usuario);
   }
 }
