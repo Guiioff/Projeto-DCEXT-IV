@@ -1,14 +1,17 @@
 package br.com.projeto.modelos;
 
+import br.com.projeto.enums.UsuarioRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -37,6 +40,9 @@ public class Usuario implements UserDetails {
   @Column(nullable = false)
   private Date dataNascimento;
 
+  @Enumerated(EnumType.STRING)
+  private UsuarioRole role;
+
   private boolean isContaExpirada;
   private boolean isContaBloqueada;
   private boolean isCredenciaisExpiradas;
@@ -51,36 +57,36 @@ public class Usuario implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return null;
+    return List.of(new SimpleGrantedAuthority(this.role.name()));
   }
 
   @Override
   public String getPassword() {
-    return null;
+    return this.senha;
   }
 
   @Override
   public String getUsername() {
-    return null;
+    return this.email;
   }
 
   @Override
   public boolean isAccountNonExpired() {
-    return false;
+    return !this.isContaExpirada;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return false;
+    return !this.isContaBloqueada;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return false;
+    return !this.isCredenciaisExpiradas;
   }
 
   @Override
   public boolean isEnabled() {
-    return false;
+    return this.isAtivo;
   }
 }
