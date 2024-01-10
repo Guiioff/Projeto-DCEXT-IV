@@ -2,6 +2,7 @@ package br.com.projeto.controladores;
 
 import br.com.projeto.dtos.UsuarioDTO;
 import br.com.projeto.servicos.UsuarioServico;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class UsuarioControlador {
   @Autowired private UsuarioServico usuarioServico;
 
   @PostMapping("/cadastro")
-  public ResponseEntity<String> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+  public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) {
     this.usuarioServico.cadastrarUsuario(usuarioDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso");
   }
