@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,7 +19,7 @@ public class Usuario {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id_usuario")
-  private Long id;
+  private UUID id;
 
   @Column(nullable = false, length = 150)
   private String nome;
