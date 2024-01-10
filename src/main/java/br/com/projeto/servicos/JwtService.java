@@ -26,7 +26,7 @@ public class JwtService {
   @Value("${jwt.tempo.expiracao}")
   private Long jwtTempoExpiracao;
 
-  private String gerarToken(UserDetails usuario) {
+  public String gerarToken(UserDetails usuario) {
     return doGerarToken(new HashMap<>(), usuario);
   }
 
