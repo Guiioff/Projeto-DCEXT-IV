@@ -1,49 +1,33 @@
 package br.com.projeto.servicos;
 
 import br.com.projeto.dtos.UsuarioDTO;
+import br.com.projeto.enums.UsuarioRole;
 import br.com.projeto.modelos.Usuario;
 import br.com.projeto.repositorios.UsuarioRepositorio;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioServico {
 
-  @Autowired private UsuarioRepositorio usuarioRepositorio;
+  private final UsuarioRepositorio usuarioRepositorio;
 
-  public void cadastrarUsuario(UsuarioDTO usuarioDTO) throws RuntimeException {
+  public UserDetails cadastrarUsuario(UsuarioDTO usuarioDTO) {
 
-    if (usuarioDTO.nome() == null || usuarioDTO.nome().isBlank()) {
-      throw new RuntimeException("O nome do usuário não pode ser nulo ou vazio");
-    }
-
-    if (usuarioDTO.email() == null || usuarioDTO.email().isBlank()) {
-      throw new RuntimeException("O email do usuário não pode ser nulo ou vazio");
-    }
-
-    if (this.usuarioRepositorio.findByEmail(usuarioDTO.email()).isPresent()) {
-      throw new RuntimeException("O email informado já existe");
-    }
-
-    if (usuarioDTO.senha() == null || usuarioDTO.senha().isBlank()) {
-      throw new RuntimeException("A senha do usuário não pode ser nula ou vazia");
-    }
-
-    if (usuarioDTO.senha().length() < 8) {
-      throw new RuntimeException("A senha do usuário deve ter, no mínimo, 8 caracteres");
-    }
-
-    if (usuarioDTO.dataNascimento() == null) {
-      throw new RuntimeException("A data de nascimento do usuário não pode ser nula");
+    if (this.usuarioRepositorio.existsByEmail(usuarioDTO.email())) {
+      throw new IllegalArgumentException("O email informado já existe");
     }
 
     Usuario usuario = new Usuario();
     BeanUtils.copyProperties(usuarioDTO, usuario);
     usuario.setDataCadastro(new Date());
+    usuario.setRole(UsuarioRole.ROLE_ADMIN);
 
-    this.usuarioRepositorio.save(usuario);
+    return this.usuarioRepositorio.save(usuario);
   }
 }
