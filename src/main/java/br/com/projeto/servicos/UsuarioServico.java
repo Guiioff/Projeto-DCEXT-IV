@@ -7,13 +7,15 @@ import br.com.projeto.repositorios.UsuarioRepositorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-public class UsuarioServico {
+public class UsuarioServico implements UserDetailsService {
 
   private final UsuarioRepositorio usuarioRepositorio;
 
@@ -29,5 +31,12 @@ public class UsuarioServico {
     usuario.setRole(UsuarioRole.ROLE_ADMIN);
 
     return this.usuarioRepositorio.save(usuario);
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return this.usuarioRepositorio
+        .findByEmail(username)
+        .orElseThrow(() -> new UsernameNotFoundException("O usuário não foi encontrado"));
   }
 }
