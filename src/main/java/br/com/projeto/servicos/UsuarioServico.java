@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.Date;
 public class UsuarioServico implements UserDetailsService {
 
   private final UsuarioRepositorio usuarioRepositorio;
+  private final PasswordEncoder passwordEncoder;
 
   public UserDetails cadastrarUsuario(UsuarioDTO usuarioDTO) {
 
@@ -28,6 +30,7 @@ public class UsuarioServico implements UserDetailsService {
     Usuario usuario = new Usuario();
     BeanUtils.copyProperties(usuarioDTO, usuario);
     usuario.setDataCadastro(new Date());
+    usuario.setSenha(this.passwordEncoder.encode(usuarioDTO.senha()));
     usuario.setRole(UsuarioRole.ROLE_ADMIN);
 
     return this.usuarioRepositorio.save(usuario);
