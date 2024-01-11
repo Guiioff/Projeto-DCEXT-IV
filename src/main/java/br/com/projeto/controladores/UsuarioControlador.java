@@ -15,11 +15,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/usuario")
 public class UsuarioControlador {
 
-  @Autowired private UsuarioServico usuarioServico;
-
-  @PostMapping("/cadastro")
-  public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) {
-    this.usuarioServico.cadastrarUsuario(usuarioDTO);
-    return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso");
-  }
 }

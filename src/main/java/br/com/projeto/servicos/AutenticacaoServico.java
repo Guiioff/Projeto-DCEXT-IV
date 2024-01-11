@@ -22,7 +22,7 @@ public class AutenticacaoServico {
     return new TokenDTO(token);
   }
 
-  public TokenDTO logar(LoginDTO loginDTO) {
+  public TokenDTO logarUsuario(LoginDTO loginDTO) {
     this.authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.senha()));
 
