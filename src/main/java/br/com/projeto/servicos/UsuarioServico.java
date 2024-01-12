@@ -31,7 +31,7 @@ public class UsuarioServico implements UserDetailsService {
     BeanUtils.copyProperties(usuarioDTO, usuario);
     usuario.setDataCadastro(new Date());
     usuario.setSenha(this.passwordEncoder.encode(usuarioDTO.senha()));
-    usuario.setRole(UsuarioRole.ROLE_ADMIN);
+    usuario.setRole(UsuarioRole.ROLE_USUARIO);
 
     return this.usuarioRepositorio.save(usuario);
   }
