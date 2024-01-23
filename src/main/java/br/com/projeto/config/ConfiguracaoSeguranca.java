@@ -1,7 +1,7 @@
 package br.com.projeto.config;
 
 import br.com.projeto.servicos.UsuarioServico;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,17 +15,29 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class ConfiguracaoSeguranca {
   private final FiltroAutenticacaoJwt filtroAutenticacaoJwt;
   private final UsuarioServico usuarioServico;
   private final PasswordEncoder passwordEncoder;
+  private final AuthenticationEntryPoint authenticationEntryPoint;
+
+  public ConfiguracaoSeguranca(
+      FiltroAutenticacaoJwt filtroJwt,
+      UsuarioServico servico,
+      PasswordEncoder encoder,
+      @Qualifier("customAuthenticationEntryPoint") AuthenticationEntryPoint entryPoint) {
+    this.filtroAutenticacaoJwt = filtroJwt;
+    this.usuarioServico = servico;
+    this.passwordEncoder = encoder;
+    this.authenticationEntryPoint = entryPoint;
+  }
 
   @Bean
   public AuthenticationProvider authenticationProvider() {
@@ -46,6 +58,8 @@ public class ConfiguracaoSeguranca {
     http.csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(
+            exception -> exception.authenticationEntryPoint(this.authenticationEntryPoint))
         .authorizeHttpRequests(
             request ->
                 request
