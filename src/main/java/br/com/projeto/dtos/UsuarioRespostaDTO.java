@@ -1,6 +1,6 @@
 package br.com.projeto.dtos;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record UsuarioRespostaDTO(
-    String nome, String email, Date dataCadastro, Date dataNascimento) {}
+    String nome, String email, LocalDate dataCadastro, LocalDate dataNascimento) {}

@@ -9,8 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,11 +34,10 @@ public class Usuario implements UserDetails {
   @Column(nullable = false, length = 100)
   private String senha;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date dataCadastro;
+  private LocalDate dataCadastro;
 
   @Column(nullable = false)
-  private Date dataNascimento;
+  private LocalDate dataNascimento;
 
   @Enumerated(EnumType.STRING)
   private UsuarioRole role;

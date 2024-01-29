@@ -7,27 +7,23 @@ import br.com.projeto.servicos.AutenticacaoServico;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AutenticacaoControlador {
   private final AutenticacaoServico autenticacaoServico;
 
   @PostMapping("/cadastro")
-  public ResponseEntity<TokenDTO> cadastrar(@RequestBody @Valid UsuarioDTO usuarioDTO) {
-    TokenDTO token = this.autenticacaoServico.cadastrarUsuario(usuarioDTO);
-    return ResponseEntity.status(HttpStatus.OK).body(token);
+  @ResponseStatus(HttpStatus.CREATED)
+  public TokenDTO cadastrar(@RequestBody @Valid UsuarioDTO usuarioDTO) {
+    return this.autenticacaoServico.cadastrarUsuario(usuarioDTO);
   }
 
   @PostMapping("/login")
-  public ResponseEntity<TokenDTO> logar(@RequestBody @Valid LoginDTO loginDTO) {
-    TokenDTO token = this.autenticacaoServico.logarUsuario(loginDTO);
-    return ResponseEntity.status(HttpStatus.OK).body(token);
+  @ResponseStatus(HttpStatus.OK)
+  public TokenDTO logar(@RequestBody @Valid LoginDTO loginDTO) {
+    return this.autenticacaoServico.logarUsuario(loginDTO);
   }
 }

@@ -6,6 +6,7 @@ import br.com.projeto.dtos.UsuarioDTO;
 import br.com.projeto.dtos.UsuarioRespostaDTO;
 import br.com.projeto.enums.UsuarioRole;
 import br.com.projeto.excecoes.UsuarioException;
+import br.com.projeto.excecoes.UsuarioNaoEncontradoException;
 import br.com.projeto.modelos.Usuario;
 import br.com.projeto.repositorios.UsuarioRepositorio;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -33,7 +34,7 @@ public class UsuarioServico implements UserDetailsService {
     Optional<Usuario> usuarioBuscado = this.usuarioRepositorio.findByEmail(email);
 
     if (usuarioBuscado.isEmpty()) {
-      throw new UsuarioException(MSG_ERRO_USUARIO_NAO_ENCONTRADO);
+      throw new UsuarioNaoEncontradoException();
     }
 
     Usuario usuario = usuarioBuscado.get();
@@ -54,7 +55,7 @@ public class UsuarioServico implements UserDetailsService {
 
     Usuario usuario = new Usuario();
     BeanUtils.copyProperties(usuarioDTO, usuario);
-    usuario.setDataCadastro(new Date());
+    usuario.setDataCadastro(LocalDate.now());
     usuario.setSenha(this.passwordEncoder.encode(usuarioDTO.senha()));
     usuario.setRole(UsuarioRole.ROLE_USUARIO);
 
@@ -63,34 +64,30 @@ public class UsuarioServico implements UserDetailsService {
 
   @Transactional
   public void mudarSenha(String email, MudarSenhaDTO mudarSenhaDTO) {
-    Optional<Usuario> usuario = this.usuarioRepositorio.findByEmail(email);
-
-    if (usuario.isEmpty()) {
-      throw new UsuarioException(MSG_ERRO_USUARIO_NAO_ENCONTRADO);
-    }
-
-    if (!usuario.get().getSenha().equals(this.passwordEncoder.encode(mudarSenhaDTO.senhaAtual()))) {
-      throw new UsuarioException("Senha atual incorreta");
-    }
-
-    Usuario usuarioAtualizado = usuario.get();
-    usuarioAtualizado.setSenha(this.passwordEncoder.encode(mudarSenhaDTO.novaSenha()));
-
-    this.usuarioRepositorio.save(usuarioAtualizado);
+    this.usuarioRepositorio
+        .findByEmail(email)
+        .map(
+            user -> {
+              String senhaAtual = this.passwordEncoder.encode(mudarSenhaDTO.senhaAtual());
+              if (user.getSenha().equals(senhaAtual)) {
+                user.setSenha(senhaAtual);
+                return this.usuarioRepositorio.save(user);
+              }
+              throw new UsuarioException("Senha atual incorreta");
+            })
+        .orElseThrow(UsuarioNaoEncontradoException::new);
   }
 
   @Transactional
   public void tornarAdmin(String email) {
-    Optional<Usuario> usuario = this.usuarioRepositorio.findByEmail(email);
-
-    if (usuario.isEmpty()) {
-      throw new UsuarioException(MSG_ERRO_USUARIO_NAO_ENCONTRADO);
-    }
-
-    Usuario usuarioAtualizado = usuario.get();
-    usuarioAtualizado.setRole(UsuarioRole.ROLE_ADMIN);
-
-    this.usuarioRepositorio.save(usuarioAtualizado);
+    this.usuarioRepositorio
+        .findByEmail(email)
+        .map(
+            user -> {
+              user.setRole(UsuarioRole.ROLE_ADMIN);
+              return this.usuarioRepositorio.save(user);
+            })
+        .orElseThrow(UsuarioNaoEncontradoException::new);
   }
 
   @Transactional
@@ -98,7 +95,7 @@ public class UsuarioServico implements UserDetailsService {
     Optional<Usuario> usuario = this.usuarioRepositorio.findByEmail(email);
 
     if (usuario.isEmpty()) {
-      throw new UsuarioException(MSG_ERRO_USUARIO_NAO_ENCONTRADO);
+      throw new UsuarioNaoEncontradoException();
     }
 
     if (!usuario.get().getSenha().equals(this.passwordEncoder.encode(deletarContaDTO.senha()))) {
@@ -110,16 +107,14 @@ public class UsuarioServico implements UserDetailsService {
 
   @Transactional
   public void mudarBloqueioConta(String email) {
-    Optional<Usuario> usuarioBuscado = this.usuarioRepositorio.findByEmail(email);
-
-    if (usuarioBuscado.isEmpty()) {
-      throw new UsuarioException(MSG_ERRO_USUARIO_NAO_ENCONTRADO);
-    }
-
-    Usuario usuario = usuarioBuscado.get();
-    usuario.setContaBloqueada(!usuario.isContaBloqueada());
-
-    this.usuarioRepositorio.save(usuario);
+    this.usuarioRepositorio
+        .findByEmail(email)
+        .map(
+            user -> {
+              user.setContaBloqueada(!user.isContaBloqueada());
+              return this.usuarioRepositorio.save(user);
+            })
+        .orElseThrow(UsuarioNaoEncontradoException::new);
   }
 
   @Override
