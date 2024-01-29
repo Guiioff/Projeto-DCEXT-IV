@@ -1,5 +1,16 @@
 package br.com.projeto.dtos;
 
-import java.util.Date;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public record UsuarioDTO(String nome, String email, String senha, Date dataNascimento) {}
+import java.time.LocalDate;
+
+public record UsuarioDTO(
+    @NotBlank(message = "O nome do usuário não pode ser nulo ou estar em branco") String nome,
+    @NotBlank(message = "O email do usuário não pode ser nulo ou estar em branco")
+        @Email(message = "O email do usuário deve ser válido")
+        String email,
+    @NotBlank(message = "A senha do usuário não pode ser nula ou estar em branco") String senha,
+    @NotNull(message = "A data de nascimento do usuário não pode ser nula")
+        LocalDate dataNascimento) {}
