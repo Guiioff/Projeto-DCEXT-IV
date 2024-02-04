@@ -7,6 +7,7 @@ import br.com.projeto.servicos.LocalServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -30,7 +31,15 @@ public class LocalControlador {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<LocalRespostaDTO> exibirLocais(){
         return this.localServico.exibirLocais();
     }
+
+    @GetMapping("/mapa")
+    @ResponseStatus(HttpStatus.OK)
+    public ModelAndView exibirMapa(@RequestParam("nome") String nome){
+        return this.localServico.exibirMapa(nome);
+    }
+
 }
