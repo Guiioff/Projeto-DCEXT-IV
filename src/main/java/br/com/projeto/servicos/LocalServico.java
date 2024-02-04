@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -68,5 +69,21 @@ public class LocalServico {
                         local.getLongitude(),
                         local.getDataCadastro()))
                 .collect(Collectors.toList());
+    }
+
+    public ModelAndView exibirMapa(String nome){
+        Optional<Local> localBanco = this.localRepositorio.findByNome(nome);
+
+        if(localBanco.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Local não encontrado.");
+        }
+
+        Local local = localBanco.get();
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("home/index");
+        mv.addObject("latitude", local.getLatitude());
+        mv.addObject("longitude", local.getLongitude());
+        return mv;
     }
 }
