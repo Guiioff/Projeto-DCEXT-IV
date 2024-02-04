@@ -42,6 +42,10 @@ public class Usuario implements UserDetails {
   @Enumerated(EnumType.STRING)
   private UsuarioRole role;
 
+  @OneToMany(mappedBy = "usuarioDono")
+  private List<Local> locaisCadastrados;
+
+
   private boolean isContaExpirada;
   private boolean isContaBloqueada;
   private boolean isCredenciaisExpiradas;
