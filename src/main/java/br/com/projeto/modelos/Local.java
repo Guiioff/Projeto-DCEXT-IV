@@ -23,6 +23,9 @@ public class Local {
 	
 	@Column(nullable = false, length = 200)
 	private String nome;
+
+	@Column(nullable = false)
+	private String descricao;
 	
 	@Column(nullable = false)
 	private double latitude;
