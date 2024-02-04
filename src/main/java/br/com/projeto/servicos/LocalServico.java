@@ -1,14 +1,14 @@
 package br.com.projeto.servicos;
 
+import br.com.projeto.controladores.LocalControlador;
 import br.com.projeto.dtos.LocalDTO;
 import br.com.projeto.dtos.LocalRespostaDTO;
 import br.com.projeto.modelos.Local;
 import br.com.projeto.repositorios.LocalRepositorio;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,11 +48,16 @@ public class LocalServico {
 
         Local local = localBanco.get();
 
+        Link linkMapa = WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder.methodOn(LocalControlador.class).exibirMapa(local.getNome()))
+                .withRel("Mapa");
+
         return new LocalRespostaDTO(local.getNome(),
                 local.getDescricao(),
                 local.getLatitude(),
                 local.getLongitude(),
-                local.getDataCadastro());
+                local.getDataCadastro(),
+                linkMapa);
     }
 
     public List<LocalRespostaDTO> exibirLocais(){
@@ -67,8 +72,11 @@ public class LocalServico {
                         local.getDescricao(),
                         local.getLatitude(),
                         local.getLongitude(),
-                        local.getDataCadastro()))
-                .collect(Collectors.toList());
+                        local.getDataCadastro(),
+                        WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder.methodOn(LocalControlador.class).exibirMapa(local.getNome()))
+                                .withRel("Mapa"))
+                ).collect(Collectors.toList());
     }
 
     public ModelAndView exibirMapa(String nome){
