@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/local")
 public class LocalControlador {
@@ -27,4 +29,8 @@ public class LocalControlador {
         return this.localServico.visualizarLocal(nome);
     }
 
+    @GetMapping
+    public List<LocalRespostaDTO> exibirLocais(){
+        return this.localServico.exibirLocais();
+    }
 }
