@@ -1,6 +1,7 @@
 package br.com.projeto.controladores;
 
 import br.com.projeto.dtos.LocalDTO;
+import br.com.projeto.dtos.LocalRespostaDTO;
 import br.com.projeto.modelos.Local;
 import br.com.projeto.servicos.LocalServico;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,4 +20,11 @@ public class LocalControlador {
     public Local cadastrarLocal(@RequestBody LocalDTO dto){
         return this.localServico.cadastrarLocal(dto);
     }
+
+    @GetMapping("/ver-local")
+    @ResponseStatus(HttpStatus.OK)
+    public LocalRespostaDTO visualizarLocal(@RequestParam("nome") String nome){
+        return this.localServico.visualizarLocal(nome);
+    }
+
 }
