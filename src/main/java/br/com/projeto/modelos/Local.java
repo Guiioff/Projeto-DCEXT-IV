@@ -1,6 +1,7 @@
 package br.com.projeto.modelos;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.UUID;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,19 +19,19 @@ public class Local {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_local")
-	private Long id;
+	private UUID id;
 	
 	@Column(nullable = false, length = 200)
 	private String nome;
 	
 	@Column(nullable = false)
-	private Double latitude;
+	private double latitude;
 	
 	@Column(nullable = false)
-	private Double longitude;
+	private double longitude;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dataCadastro;
+	@Column(nullable = false)
+	private LocalDate dataCadastro;
 
 	@ManyToOne
 	@JoinColumn(name = "usuarioDono_id")
