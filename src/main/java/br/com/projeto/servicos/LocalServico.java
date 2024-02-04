@@ -7,6 +7,7 @@ import br.com.projeto.modelos.Local;
 import br.com.projeto.repositorios.LocalRepositorio;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -60,23 +65,22 @@ public class LocalServico {
                 linkMapa);
     }
 
-    public List<LocalRespostaDTO> exibirLocais(){
-        List<Local> locais = this.localRepositorio.findAll();
+    public Page<LocalRespostaDTO> exibirLocais(int page, int size, String order){
 
-        if(CollectionUtils.isEmpty(locais)){
-            return Collections.emptyList();
-        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(order));
+        Page<Local> locaisPaginados = this.localRepositorio.findAll(pageable);
 
-        return locais.stream()
-                .map(local -> new LocalRespostaDTO(local.getNome(),
-                        local.getDescricao(),
-                        local.getLatitude(),
-                        local.getLongitude(),
-                        local.getDataCadastro(),
-                        WebMvcLinkBuilder
-                                .linkTo(WebMvcLinkBuilder.methodOn(LocalControlador.class).exibirMapa(local.getNome()))
-                                .withRel("Mapa"))
-                ).collect(Collectors.toList());
+        return locaisPaginados.map(local -> new LocalRespostaDTO(
+                local.getNome(),
+                local.getDescricao(),
+                local.getLatitude(),
+                local.getLongitude(),
+                local.getDataCadastro(),
+                WebMvcLinkBuilder
+                        .linkTo(WebMvcLinkBuilder.methodOn(LocalControlador.class).exibirMapa(local.getNome()))
+                        .withRel("Mapa"))
+        );
+
     }
 
     public ModelAndView exibirMapa(String nome){
