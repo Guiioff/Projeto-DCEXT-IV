@@ -1,8 +1,10 @@
 package br.com.projeto.modelos;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
+import br.com.projeto.enums.Recursos;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +37,8 @@ public class Local {
 
 	@Column(nullable = false)
 	private LocalDate dataCadastro;
+
+	private List<Recursos> recursos;
 
 	@ManyToOne
 	@JoinColumn(name = "usuarioDono_id")

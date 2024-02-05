@@ -25,72 +25,76 @@ import java.util.Optional;
 @Service
 public class LocalServico {
 
-    @Autowired
-    private LocalRepositorio localRepositorio;
+  @Autowired private LocalRepositorio localRepositorio;
 
-    @Transactional
-    public Local cadastrarLocal(LocalDTO dto){
+  @Transactional
+  public Local cadastrarLocal(LocalDTO dto) {
 
-        Local novoLocal = new Local();
-        BeanUtils.copyProperties(dto, novoLocal);
-        novoLocal.setDataCadastro(LocalDate.now());
-        novoLocal.setUsuarioDono(null);
+    Local novoLocal = new Local();
+    BeanUtils.copyProperties(dto, novoLocal);
+    novoLocal.setDataCadastro(LocalDate.now());
+    novoLocal.setUsuarioDono(null);
 
-        return this.localRepositorio.save(novoLocal);
+    return this.localRepositorio.save(novoLocal);
+  }
+
+  public LocalRespostaDTO visualizarLocal(String nome) {
+    Optional<Local> localBanco = this.localRepositorio.findByNome(nome);
+
+    if (localBanco.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Local não encontrado.");
     }
 
-    public LocalRespostaDTO visualizarLocal(String nome){
-        Optional<Local> localBanco = this.localRepositorio.findByNome(nome);
+    Local local = localBanco.get();
 
-        if(localBanco.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Local não encontrado.");
-        }
+    Link linkMapa =
+        WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(LocalControlador.class).exibirMapa(local.getNome()))
+            .withRel("Mapa");
 
-        Local local = localBanco.get();
+    return new LocalRespostaDTO(
+        local.getNome(),
+        local.getDescricao(),
+        local.getLatitude(),
+        local.getLongitude(),
+        local.getRecursos(),
+        local.getDataCadastro(),
+        linkMapa);
+  }
 
-        Link linkMapa = WebMvcLinkBuilder
-                .linkTo(WebMvcLinkBuilder.methodOn(LocalControlador.class).exibirMapa(local.getNome()))
-                .withRel("Mapa");
+  public Page<LocalRespostaDTO> exibirLocais(int page, int size, String order) {
 
-        return new LocalRespostaDTO(local.getNome(),
-                local.getDescricao(),
-                local.getLatitude(),
-                local.getLongitude(),
-                local.getDataCadastro(),
-                linkMapa);
-    }
+    Pageable pageable = PageRequest.of(page, size, Sort.by(order));
+    Page<Local> locaisPaginados = this.localRepositorio.findAll(pageable);
 
-    public Page<LocalRespostaDTO> exibirLocais(int page, int size, String order){
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(order));
-        Page<Local> locaisPaginados = this.localRepositorio.findAll(pageable);
-
-        return locaisPaginados.map(local -> new LocalRespostaDTO(
+    return locaisPaginados.map(
+        local ->
+            new LocalRespostaDTO(
                 local.getNome(),
                 local.getDescricao(),
                 local.getLatitude(),
                 local.getLongitude(),
+                local.getRecursos(),
                 local.getDataCadastro(),
-                WebMvcLinkBuilder
-                        .linkTo(WebMvcLinkBuilder.methodOn(LocalControlador.class).exibirMapa(local.getNome()))
-                        .withRel("Mapa"))
-        );
+                WebMvcLinkBuilder.linkTo(
+                        WebMvcLinkBuilder.methodOn(LocalControlador.class)
+                            .exibirMapa(local.getNome()))
+                    .withRel("Mapa")));
+  }
 
+  public ModelAndView exibirMapa(String nome) {
+    Optional<Local> localBanco = this.localRepositorio.findByNome(nome);
+
+    if (localBanco.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Local não encontrado.");
     }
 
-    public ModelAndView exibirMapa(String nome){
-        Optional<Local> localBanco = this.localRepositorio.findByNome(nome);
+    Local local = localBanco.get();
 
-        if(localBanco.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Local não encontrado.");
-        }
-
-        Local local = localBanco.get();
-
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("home/index");
-        mv.addObject("latitude", local.getLatitude());
-        mv.addObject("longitude", local.getLongitude());
-        return mv;
-    }
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName("home/index");
+    mv.addObject("latitude", local.getLatitude());
+    mv.addObject("longitude", local.getLongitude());
+    return mv;
+  }
 }
