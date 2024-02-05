@@ -74,4 +74,9 @@ public class JwtServico {
     byte[] chaveBytes = Decoders.BASE64.decode(this.jwtSecretKey);
     return Keys.hmacShaKeyFor(chaveBytes);
   }
+
+  public String redirecionarUsername(String header) {
+    String token = header.substring(7);
+    return extrairUsername(token);
+  }
 }

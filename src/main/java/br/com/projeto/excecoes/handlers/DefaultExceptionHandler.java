@@ -1,7 +1,7 @@
 package br.com.projeto.excecoes.handlers;
 
 import br.com.projeto.excecoes.ErroResposta;
-import br.com.projeto.excecoes.UsuarioNaoEncontradoException;
+import br.com.projeto.excecoes.NaoEncontradoException;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class DefaultExceptionHandler {
-  @ExceptionHandler(UsuarioNaoEncontradoException.class)
+  @ExceptionHandler(NaoEncontradoException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ErroResposta handleUsuarioNaoEncontradoException(UsuarioNaoEncontradoException exception) {
+  public ErroResposta handleUsuarioNaoEncontradoException(NaoEncontradoException exception) {
     return new ErroResposta(exception.getMessage());
   }
 

@@ -7,7 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record UsuarioDTO(
-    @NotBlank(message = "O nome do usuário não pode ser nulo ou estar em branco") String nome,
+    @NotBlank(message = "O nome de usuário não pode ser nulo ou estar em branco")
+        String nomeUsuario,
     @NotBlank(message = "O email do usuário não pode ser nulo ou estar em branco")
         @Email(message = "O email do usuário deve ser válido")
         String email,

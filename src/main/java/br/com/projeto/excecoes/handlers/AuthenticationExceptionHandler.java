@@ -21,4 +21,10 @@ public class AuthenticationExceptionHandler {
   public ErroResposta handleAccessDenied() {
     return new ErroResposta("Você não tem permissão para acessar este recurso");
   }
+
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ErroResposta handleAccessDenied(Exception e) {
+    return new ErroResposta(e.getMessage());
+  }
 }

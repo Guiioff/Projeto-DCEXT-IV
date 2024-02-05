@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.com.projeto.enums.Recursos;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,30 +18,33 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Local {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_local")
-	private UUID id;
-	
-	@Column(nullable = false, length = 200)
-	private String nome;
 
-	@Column(nullable = false)
-	private String descricao;
-	
-	@Column(nullable = false)
-	private double latitude;
-	
-	@Column(nullable = false)
-	private double longitude;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id_local")
+  private UUID id;
 
-	@Column(nullable = false)
-	private LocalDate dataCadastro;
+  @Column(nullable = false, length = 200)
+  private String nome;
 
-	private List<Recursos> recursos;
+  @Column(nullable = false, length = 10000)
+  private String descricao;
 
-	@ManyToOne
-	@JoinColumn(name = "usuarioDono_id")
-	private Usuario usuarioDono;
+  @Column(nullable = false)
+  private Double latitude;
+
+  @Column(nullable = false)
+  private Double longitude;
+
+  @Column(nullable = false)
+  private LocalDate dataCadastro;
+
+  private List<Recursos> recursos;
+
+  @ManyToOne
+  @JoinColumn(name = "usuarioDono_id")
+  private Usuario usuarioDono;
+
+  @OneToMany(mappedBy = "local")
+  private List<Avaliacao> avaliacoes;
 }

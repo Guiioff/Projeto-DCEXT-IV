@@ -3,6 +3,7 @@ package br.com.projeto.modelos;
 import br.com.projeto.enums.UsuarioRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class Usuario implements UserDetails {
 
   @Id
@@ -25,8 +27,8 @@ public class Usuario implements UserDetails {
   @Column(name = "id_usuario")
   private UUID id;
 
-  @Column(nullable = false, length = 150)
-  private String nome;
+  @Column(nullable = false, length = 150, unique = true)
+  private String nomeUsuario;
 
   @Column(nullable = false, length = 100, unique = true)
   private String email;
@@ -43,8 +45,10 @@ public class Usuario implements UserDetails {
   private UsuarioRole role;
 
   @OneToMany(mappedBy = "usuarioDono")
-  private List<Local> locaisCadastrados;
+  private transient List<Local> locaisCadastrados;
 
+  @OneToMany(mappedBy = "autor")
+  private transient List<Avaliacao> avaliacoes;
 
   private boolean isContaExpirada;
   private boolean isContaBloqueada;
@@ -70,7 +74,7 @@ public class Usuario implements UserDetails {
 
   @Override
   public String getUsername() {
-    return this.email;
+    return this.nomeUsuario;
   }
 
   @Override

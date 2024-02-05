@@ -5,8 +5,9 @@ import br.com.projeto.dtos.MudarSenhaDTO;
 import br.com.projeto.dtos.UsuarioDTO;
 import br.com.projeto.dtos.UsuarioRespostaDTO;
 import br.com.projeto.enums.UsuarioRole;
-import br.com.projeto.excecoes.UsuarioException;
-import br.com.projeto.excecoes.UsuarioNaoEncontradoException;
+import br.com.projeto.excecoes.SenhaIncorretaException;
+import br.com.projeto.excecoes.RegistroExistenteException;
+import br.com.projeto.excecoes.NaoEncontradoException;
 import br.com.projeto.modelos.Usuario;
 import br.com.projeto.repositorios.UsuarioRepositorio;
 import lombok.RequiredArgsConstructor;
@@ -19,28 +20,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UsuarioServico implements UserDetailsService {
 
   private static final String MSG_ERRO_USUARIO_NAO_ENCONTRADO =
-      "Não foi encontrado nenhum usuário com o email informado";
+      "Não foi encontrado nenhum usuário com o nome informado";
   private final UsuarioRepositorio usuarioRepositorio;
   private final PasswordEncoder passwordEncoder;
 
-  public UsuarioRespostaDTO consultarUsuario(String email) {
-    Optional<Usuario> usuarioBuscado = this.usuarioRepositorio.findByEmail(email);
-
-    if (usuarioBuscado.isEmpty()) {
-      throw new UsuarioNaoEncontradoException();
-    }
-
-    Usuario usuario = usuarioBuscado.get();
+  public UsuarioRespostaDTO consultarUsuario(String nomeUsuario) {
+    Usuario usuario =
+        this.usuarioRepositorio
+            .findByNomeUsuario(nomeUsuario)
+            .orElseThrow(() -> new NaoEncontradoException(MSG_ERRO_USUARIO_NAO_ENCONTRADO));
 
     return new UsuarioRespostaDTO(
-        usuario.getNome(),
+        usuario.getNomeUsuario(),
         usuario.getEmail(),
         usuario.getDataCadastro(),
         usuario.getDataNascimento());
@@ -50,7 +47,11 @@ public class UsuarioServico implements UserDetailsService {
   public UserDetails cadastrarUsuario(UsuarioDTO usuarioDTO) {
 
     if (this.usuarioRepositorio.existsByEmail(usuarioDTO.email())) {
-      throw new UsuarioException("O email informado já existe");
+      throw new RegistroExistenteException("O email informado já existe");
+    }
+
+    if (this.usuarioRepositorio.existsByNomeUsuario(usuarioDTO.nomeUsuario())) {
+      throw new RegistroExistenteException("O nome de usuário informado já existe");
     }
 
     Usuario usuario = new Usuario();
@@ -63,46 +64,46 @@ public class UsuarioServico implements UserDetailsService {
   }
 
   @Transactional
-  public void mudarSenha(String email, MudarSenhaDTO mudarSenhaDTO) {
+  public void mudarSenha(String nomeUsuario, MudarSenhaDTO mudarSenhaDTO) {
     this.usuarioRepositorio
-        .findByEmail(email)
+        .findByNomeUsuario(nomeUsuario)
         .map(
             user -> {
               String senhaAtual = this.passwordEncoder.encode(mudarSenhaDTO.senhaAtual());
               if (user.getSenha().equals(senhaAtual)) {
-                user.setSenha(senhaAtual);
+                user.setSenha(this.passwordEncoder.encode(mudarSenhaDTO.novaSenha()));
                 return this.usuarioRepositorio.save(user);
               }
-              throw new UsuarioException("Senha atual incorreta");
+              throw new SenhaIncorretaException("Senha atual incorreta");
             })
-        .orElseThrow(UsuarioNaoEncontradoException::new);
+        .orElseThrow(() -> new NaoEncontradoException(MSG_ERRO_USUARIO_NAO_ENCONTRADO));
   }
 
   @Transactional
-  public void tornarAdmin(String email) {
+  public void tornarAdmin(String nomeUsuario) {
     this.usuarioRepositorio
-        .findByEmail(email)
+        .findByNomeUsuario(nomeUsuario)
         .map(
             user -> {
               user.setRole(UsuarioRole.ROLE_ADMIN);
               return this.usuarioRepositorio.save(user);
             })
-        .orElseThrow(UsuarioNaoEncontradoException::new);
+        .orElseThrow(() -> new NaoEncontradoException(MSG_ERRO_USUARIO_NAO_ENCONTRADO));
   }
 
   @Transactional
-  public void deletarUsuario(String email, DeletarContaDTO deletarContaDTO) {
-    Optional<Usuario> usuario = this.usuarioRepositorio.findByEmail(email);
-
-    if (usuario.isEmpty()) {
-      throw new UsuarioNaoEncontradoException();
-    }
-
-    if (!usuario.get().getSenha().equals(this.passwordEncoder.encode(deletarContaDTO.senha()))) {
-      throw new UsuarioException("Senha incorreta");
-    }
-
-    this.usuarioRepositorio.deleteByEmail(email);
+  public void deletarUsuario(String nomeUsuario, DeletarContaDTO deletarContaDTO) {
+    this.usuarioRepositorio
+        .findByNomeUsuario(nomeUsuario)
+        .map(
+            user -> {
+              if (!user.getSenha().equals(this.passwordEncoder.encode(deletarContaDTO.senha()))) {
+                throw new SenhaIncorretaException("Senha incorreta");
+              }
+              this.usuarioRepositorio.deleteByNomeUsuario(nomeUsuario);
+              return Void.TYPE;
+            })
+        .orElseThrow(() -> new NaoEncontradoException(MSG_ERRO_USUARIO_NAO_ENCONTRADO));
   }
 
   @Transactional
@@ -114,13 +115,19 @@ public class UsuarioServico implements UserDetailsService {
               user.setContaBloqueada(!user.isContaBloqueada());
               return this.usuarioRepositorio.save(user);
             })
-        .orElseThrow(UsuarioNaoEncontradoException::new);
+        .orElseThrow(() -> new NaoEncontradoException(MSG_ERRO_USUARIO_NAO_ENCONTRADO));
   }
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return this.usuarioRepositorio
-        .findByEmail(username)
+        .findByNomeUsuario(username)
+        .orElseThrow(() -> new UsernameNotFoundException(MSG_ERRO_USUARIO_NAO_ENCONTRADO));
+  }
+
+  public Usuario buscarPorNome(String nomeUsuario) {
+    return this.usuarioRepositorio
+        .findByNomeUsuario(nomeUsuario)
         .orElseThrow(() -> new UsernameNotFoundException(MSG_ERRO_USUARIO_NAO_ENCONTRADO));
   }
 }
