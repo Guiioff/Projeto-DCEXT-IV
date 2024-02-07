@@ -130,16 +130,6 @@ public class LocalServico {
   public List<AvaliacaoRespostaDTO> gerarListaAvaliacoes(String nomeLocal) {
     List<Avaliacao> avaliacoes = this.avaliacaoRepositorio.getAllByNomeLocal(nomeLocal);
 
-    float total = 0;
-
-    for(Avaliacao avaliacao : avaliacoes){
-      total += avaliacao.getNota();
-    }
-
-    float media = total / avaliacoes.size();
-
-    System.out.println( nomeLocal + " possui média de: " + media);
-
     return avaliacoes.stream().map(this::converterParaResposta).toList();
   }
 
