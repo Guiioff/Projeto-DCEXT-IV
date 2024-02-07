@@ -21,44 +21,44 @@ public class UsuarioControlador {
   @GetMapping("/perfil")
   @ResponseStatus(HttpStatus.OK)
   public UsuarioRespostaDTO verPerfil(@RequestHeader("Authorization") String token) {
-    String email = this.jwtServico.extrairUsername(token);
-    return this.usuarioServico.consultarUsuario(email);
+    String nomeUsuario = this.jwtServico.redirecionarUsername(token);
+    return this.usuarioServico.consultarUsuario(nomeUsuario);
   }
 
   @GetMapping("/consultar-usuario")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @ResponseStatus(HttpStatus.OK)
-  public UsuarioRespostaDTO consultarUsuario(@RequestParam(value = "email") String email) {
-    return this.usuarioServico.consultarUsuario(email);
+  public UsuarioRespostaDTO consultarUsuario(@RequestParam(value = "nome") String nome) {
+    return this.usuarioServico.consultarUsuario(nome);
   }
 
   @PatchMapping("/mudar-senha")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void mudarSenha(
       @RequestHeader("Authorization") String token, @RequestBody @Valid MudarSenhaDTO dto) {
-    String email = this.jwtServico.extrairUsername(token);
-    this.usuarioServico.mudarSenha(email, dto);
+    String nomeUsuario = this.jwtServico.redirecionarUsername(token);
+    this.usuarioServico.mudarSenha(nomeUsuario, dto);
   }
 
   @PatchMapping("/mudar-role")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void tornarAdmin(@RequestParam(value = "email") String email) {
-    this.usuarioServico.tornarAdmin(email);
+  public void tornarAdmin(@RequestParam(value = "nome") String nome) {
+    this.usuarioServico.tornarAdmin(nome);
   }
 
   @PatchMapping("/mudar-bloqueio")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void mudarBloqueio(@RequestParam(value = "email") String email) {
-    this.usuarioServico.mudarBloqueioConta(email);
+  public void mudarBloqueio(@RequestParam(value = "nome") String nome) {
+    this.usuarioServico.mudarBloqueioConta(nome);
   }
 
   @DeleteMapping("/deletar-conta")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deletarConta(
       @RequestHeader("Authorization") String token, @RequestBody @Valid DeletarContaDTO dto) {
-    String email = this.jwtServico.extrairUsername(token);
-    this.usuarioServico.deletarUsuario(email, dto);
+    String nome = this.jwtServico.redirecionarUsername(token);
+    this.usuarioServico.deletarUsuario(nome, dto);
   }
 }

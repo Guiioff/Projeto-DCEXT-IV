@@ -63,8 +63,10 @@ public class ConfiguracaoSeguranca {
         .authorizeHttpRequests(
             request ->
                 request
-                    .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/local/mapa").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/local/mapa")
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .authenticationProvider(authenticationProvider())

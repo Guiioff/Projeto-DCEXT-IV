@@ -24,9 +24,9 @@ public class AutenticacaoServico {
 
   public TokenDTO logarUsuario(LoginDTO loginDTO) {
     this.authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.senha()));
+        new UsernamePasswordAuthenticationToken(loginDTO.nomeUsuario(), loginDTO.senha()));
 
-    UserDetails usuario = this.usuarioServico.loadUserByUsername(loginDTO.email());
+    UserDetails usuario = this.usuarioServico.loadUserByUsername(loginDTO.nomeUsuario());
     String token = this.jwtServico.gerarToken(usuario);
     return new TokenDTO(token);
   }
