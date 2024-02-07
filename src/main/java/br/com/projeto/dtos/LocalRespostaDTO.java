@@ -16,5 +16,6 @@ public record LocalRespostaDTO(
     List<Recursos> recursos,
     LocalDate dataCadastro,
     String autor,
+    Double media,
     List<AvaliacaoRespostaDTO> avaliacoes,
     Link mapa) {}

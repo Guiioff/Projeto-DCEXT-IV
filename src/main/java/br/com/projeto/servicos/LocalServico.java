@@ -66,6 +66,7 @@ public class LocalServico {
                   local.getRecursos(),
                   local.getDataCadastro(),
                   local.getUsuarioDono().getNomeUsuario(),
+                  gerarMediaLocal(gerarListaAvaliacoes(local.getNome())),
                   gerarListaAvaliacoes(local.getNome()),
                   linkMapa);
             })
@@ -87,6 +88,7 @@ public class LocalServico {
                 local.getRecursos(),
                 local.getDataCadastro(),
                 local.getUsuarioDono().getNomeUsuario(),
+                gerarMediaLocal(gerarListaAvaliacoes(local.getNome())),
                 gerarListaAvaliacoes(local.getNome()),
                 WebMvcLinkBuilder.linkTo(
                         WebMvcLinkBuilder.methodOn(LocalControlador.class)
@@ -128,6 +130,25 @@ public class LocalServico {
   public List<AvaliacaoRespostaDTO> gerarListaAvaliacoes(String nomeLocal) {
     List<Avaliacao> avaliacoes = this.avaliacaoRepositorio.getAllByNomeLocal(nomeLocal);
 
+    float total = 0;
+
+    for(Avaliacao avaliacao : avaliacoes){
+      total += avaliacao.getNota();
+    }
+
+    float media = total / avaliacoes.size();
+
+    System.out.println( nomeLocal + " possui média de: " + media);
+
     return avaliacoes.stream().map(this::converterParaResposta).toList();
   }
+
+  private double gerarMediaLocal(List<AvaliacaoRespostaDTO> avaliacoes) {
+    return Math.round(avaliacoes.stream()
+            .mapToDouble(AvaliacaoRespostaDTO::nota)
+            .average()
+            .orElse(0) * 100.0) / 100.0;
+  }
+
+
 }
