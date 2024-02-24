@@ -59,16 +59,17 @@ public class LocalServico {
                       .withRel("Mapa");
 
               return new LocalRespostaDTO(
-                  local.getNome(),
-                  local.getDescricao(),
-                  local.getLatitude(),
-                  local.getLongitude(),
-                  local.getRecursos(),
-                  local.getDataCadastro(),
-                  local.getUsuarioDono().getNomeUsuario(),
-                  gerarMediaLocal(gerarListaAvaliacoes(local.getNome())),
-                  gerarListaAvaliacoes(local.getNome()),
-                  linkMapa);
+                      local.getNome(),
+                      local.getDescricao(),
+                      local.getRua(),
+                      local.getNumero(),
+                      local.getBairro(),
+                      local.getRecursos(),
+                      local.getDataCadastro(),
+                      local.getUsuarioDono().getNomeUsuario(),
+                      gerarMediaLocal(gerarListaAvaliacoes(local.getNome())),
+                      gerarListaAvaliacoes(local.getNome()),
+                      linkMapa);
             })
         .orElseThrow(() -> new NaoEncontradoException("Local não encontrado"));
   }
@@ -81,16 +82,17 @@ public class LocalServico {
     return locaisPaginados.map(
         local ->
             new LocalRespostaDTO(
-                local.getNome(),
-                local.getDescricao(),
-                local.getLatitude(),
-                local.getLongitude(),
-                local.getRecursos(),
-                local.getDataCadastro(),
-                local.getUsuarioDono().getNomeUsuario(),
-                gerarMediaLocal(gerarListaAvaliacoes(local.getNome())),
-                gerarListaAvaliacoes(local.getNome()),
-                WebMvcLinkBuilder.linkTo(
+                    local.getNome(),
+                    local.getDescricao(),
+                    local.getRua(),
+                    local.getNumero(),
+                    local.getBairro(),
+                    local.getRecursos(),
+                    local.getDataCadastro(),
+                    local.getUsuarioDono().getNomeUsuario(),
+                    gerarMediaLocal(gerarListaAvaliacoes(local.getNome())),
+                    gerarListaAvaliacoes(local.getNome()),
+                    WebMvcLinkBuilder.linkTo(
                         WebMvcLinkBuilder.methodOn(LocalControlador.class)
                             .exibirMapa(local.getNome()))
                     .withRel("Mapa")));
@@ -107,8 +109,9 @@ public class LocalServico {
 
     ModelAndView mv = new ModelAndView();
     mv.setViewName("home/index");
-    mv.addObject("latitude", local.getLatitude());
-    mv.addObject("longitude", local.getLongitude());
+    mv.addObject("rua", local.getRua());
+    mv.addObject("numero", local.getNumero());
+    mv.addObject("bairro", local.getBairro());
     return mv;
   }
 

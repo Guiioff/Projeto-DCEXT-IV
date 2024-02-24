@@ -30,11 +30,14 @@ public class Local {
   @Column(nullable = false, length = 10000)
   private String descricao;
 
-  @Column(nullable = false)
-  private Double latitude;
+  @Column(nullable = false, length = 200)
+  private String rua;
 
   @Column(nullable = false)
-  private Double longitude;
+  private int numero;
+
+  @Column(nullable = false, length = 200)
+  private String bairro;
 
   @Column(nullable = false)
   private LocalDate dataCadastro;

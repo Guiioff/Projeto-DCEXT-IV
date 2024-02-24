@@ -11,8 +11,9 @@ import java.util.List;
 public record LocalRespostaDTO(
     String nome,
     String descricao,
-    Double latitude,
-    Double longitude,
+    String rua,
+    int numero,
+    String bairro,
     List<Recursos> recursos,
     LocalDate dataCadastro,
     String autor,
