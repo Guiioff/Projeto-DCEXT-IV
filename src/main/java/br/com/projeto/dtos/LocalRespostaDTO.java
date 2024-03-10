@@ -6,9 +6,13 @@ import org.springframework.hateoas.Link;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 public record LocalRespostaDTO(
+
+    UUID id,
+
     String nome,
     String descricao,
     String rua,

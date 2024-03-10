@@ -7,15 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/avaliacao")
 public class AvaliacaoControlador {
   private final AvaliacaoServico avaliacaoServico;
 
-  @PostMapping("/publicar")
+  @PostMapping("/publicar/{id}")
   @ResponseStatus(HttpStatus.CREATED)
-  public void avaliar(@RequestBody @Valid AvaliacaoDTO data) {
-    this.avaliacaoServico.publicarAvaliacao(data);
+  public void avaliar(@RequestBody @Valid AvaliacaoDTO data, @PathVariable UUID id) {
+    this.avaliacaoServico.publicarAvaliacao(id, data);
   }
 }

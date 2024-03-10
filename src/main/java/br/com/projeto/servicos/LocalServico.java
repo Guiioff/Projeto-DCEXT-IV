@@ -60,6 +60,7 @@ public class LocalServico {
                       .withRel("Mapa");
 
               return new LocalRespostaDTO(
+                      local.getId(),
                       local.getNome(),
                       local.getDescricao(),
                       local.getRua(),
@@ -85,6 +86,7 @@ public class LocalServico {
 
     List<LocalRespostaDTO> locaisDTO = locaisPaginados.stream()
             .map(local -> new LocalRespostaDTO(
+                    local.getId(),
                     local.getNome(),
                     local.getDescricao(),
                     local.getRua(),

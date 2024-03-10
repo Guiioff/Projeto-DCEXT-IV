@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,13 +21,13 @@ public class AvaliacaoServico {
   private final LocalServico localServico;
 
   @Transactional
-  public void publicarAvaliacao(AvaliacaoDTO data) {
+  public void publicarAvaliacao(UUID id, AvaliacaoDTO data) {
     Avaliacao avaliacao =
         Avaliacao.builder()
             .nota(data.nota())
             .comentario(data.comentario())
             .autor(this.usuarioServico.buscarPorNome(data.nomeAutor()))
-            .local(this.localServico.buscarPorId(data.idLocal()))
+            .local(this.localServico.buscarPorId(id))
             .data(LocalDate.now())
             .build();
 

@@ -67,6 +67,8 @@ public class ConfiguracaoSeguranca {
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/local/**")
                     .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/avaliacao/**")
+                        .permitAll()
                     .anyRequest()
                     .authenticated())
         .authenticationProvider(authenticationProvider())
