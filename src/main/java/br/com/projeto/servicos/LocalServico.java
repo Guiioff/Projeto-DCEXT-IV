@@ -38,12 +38,12 @@ public class LocalServico {
   private final AvaliacaoRepositorio avaliacaoRepositorio;
 
   @Transactional
-  public UUID cadastrarLocal(String nomeUsuario, LocalDTO dto) {
+  public UUID cadastrarLocal(LocalDTO dto) {
 
     Local novoLocal = new Local();
     BeanUtils.copyProperties(dto, novoLocal);
     novoLocal.setDataCadastro(LocalDate.now());
-    novoLocal.setUsuarioDono(this.usuarioServico.buscarPorNome(nomeUsuario));
+    novoLocal.setUsuarioDono(this.usuarioServico.buscarPorNome("admin"));
 
     return this.localRepositorio.save(novoLocal).getId();
   }

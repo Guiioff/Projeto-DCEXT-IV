@@ -48,7 +48,6 @@
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAhefUroNgMWN6d8pKFFFLPrrNM9aaMSc&callback=initMap" async defer></script>
 
-<!-- Adicionando o formulário para enviar avaliações -->
 <form id="avaliacaoForm" th:action="@{'/avaliacao/publicar/' + ${local.id}}" method="post" onsubmit="return enviarAvaliacao()">
     <h4>Avaliar o Local:</h4>
     <label for="nota">Nota:</label>
@@ -95,6 +94,8 @@
             nomeAutor: nomeAutor
         };
 
+        const urlAntesEnvio = "/local/ver-local?nome=" + encodeURIComponent([[${local.nome}]]);
+
         const response = await fetch("/avaliacao/publicar/" + local.id, {
             method: 'POST',
             headers: {
@@ -106,6 +107,8 @@
 
         if (response.ok) {
             console.log('Avaliação enviada com sucesso!');
+
+            window.location.replace(urlAntesEnvio);
         } else {
             console.error('Erro ao enviar avaliação:', response.statusText);
         }

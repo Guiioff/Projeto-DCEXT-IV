@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,12 +26,10 @@ public class LocalControlador {
   private final LocalServico localServico;
   private final JwtServico jwtServico;
 
-  @PostMapping("/cadastrar")
+  @PostMapping(path = "/cadastrar", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
-  public UUID cadastrarLocal(
-      @RequestHeader("Authorization") String token, @RequestBody @Valid LocalDTO dto) {
-    String nome = this.jwtServico.redirecionarUsername(token);
-    return this.localServico.cadastrarLocal(nome, dto);
+  public UUID cadastrarLocalForm(@ModelAttribute @Valid LocalDTO dto) {
+    return this.localServico.cadastrarLocal(dto);
   }
 
   @GetMapping("/ver-local")

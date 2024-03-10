@@ -17,7 +17,7 @@ public class AvaliacaoControlador {
 
   @PostMapping("/publicar/{id}")
   @ResponseStatus(HttpStatus.CREATED)
-  public void avaliar(@RequestBody @Valid AvaliacaoDTO data, @PathVariable UUID id) {
+  public void avaliar(@ModelAttribute @Valid AvaliacaoDTO data, @PathVariable UUID id) {
     this.avaliacaoServico.publicarAvaliacao(id, data);
   }
 }
