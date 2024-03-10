@@ -21,7 +21,9 @@
         <tr th:each="local : ${locais}">
             <td th:text="${local.nome}"></td>
             <td th:text="${local.descricao}"></td>
-            <!-- Adicione mais colunas conforme necessário -->
+            <td>
+                <a th:href="${local.mapa.href}" target="_blank">Detalhes</a>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -48,8 +48,8 @@ public class LocalServico {
     return this.localRepositorio.save(novoLocal).getId();
   }
 
-  public LocalRespostaDTO visualizarLocal(String nome) {
-    return this.localRepositorio
+  public ModelAndView visualizarLocal(String nome) {
+    LocalRespostaDTO localDTO = this.localRepositorio
         .findByNome(nome)
         .map(
             local -> {
@@ -73,6 +73,11 @@ public class LocalServico {
                       linkMapa);
             })
         .orElseThrow(() -> new NaoEncontradoException("Local não encontrado"));
+
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName("home/index");
+    mv.addObject("local",localDTO);
+    return mv;
   }
 
   public ModelAndView exibirLocais() {

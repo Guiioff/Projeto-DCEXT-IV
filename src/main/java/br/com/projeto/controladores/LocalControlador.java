@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,7 +35,7 @@ public class LocalControlador {
 
   @GetMapping("/ver-local")
   @ResponseStatus(HttpStatus.OK)
-  public LocalRespostaDTO visualizarLocal(@RequestParam("nome") String nome) {
+  public ModelAndView visualizarLocal(@RequestParam("nome") String nome) {
     return this.localServico.visualizarLocal(nome);
   }
 
@@ -44,9 +45,9 @@ public class LocalControlador {
     return this.localServico.exibirLocais();
   }
 
-  @GetMapping("/mapa")
-  @ResponseStatus(HttpStatus.OK)
-  public ModelAndView exibirMapa(@RequestParam("nome") String nome) {
-    return this.localServico.exibirMapa(nome);
-  }
+//  @GetMapping("/mapa")
+//  @ResponseStatus(HttpStatus.OK)
+//  public ModelAndView exibirMapa(@RequestParam("nome") String nome) {
+//    return this.localServico.exibirMapa(nome);
+//  }
 }
