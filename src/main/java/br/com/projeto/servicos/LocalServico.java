@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -74,14 +75,11 @@ public class LocalServico {
         .orElseThrow(() -> new NaoEncontradoException("Local não encontrado"));
   }
 
-  public Page<LocalRespostaDTO> exibirLocais(int page, int size, String order) {
+  public ModelAndView exibirLocais() {
+    List<Local> locaisPaginados = this.localRepositorio.findAll();
 
-    Pageable pageable = PageRequest.of(page, size, Sort.by(order));
-    Page<Local> locaisPaginados = this.localRepositorio.findAll(pageable);
-
-    return locaisPaginados.map(
-        local ->
-            new LocalRespostaDTO(
+    List<LocalRespostaDTO> locaisDTO = locaisPaginados.stream()
+            .map(local -> new LocalRespostaDTO(
                     local.getNome(),
                     local.getDescricao(),
                     local.getRua(),
@@ -89,13 +87,19 @@ public class LocalServico {
                     local.getBairro(),
                     local.getRecursos(),
                     local.getDataCadastro(),
-                    local.getUsuarioDono().getNomeUsuario(),
+                    (local.getUsuarioDono() != null) ? local.getUsuarioDono().getNomeUsuario() : null,
                     gerarMediaLocal(gerarListaAvaliacoes(local.getNome())),
                     gerarListaAvaliacoes(local.getNome()),
                     WebMvcLinkBuilder.linkTo(
-                        WebMvcLinkBuilder.methodOn(LocalControlador.class)
-                            .exibirMapa(local.getNome()))
-                    .withRel("Mapa")));
+                                    WebMvcLinkBuilder.methodOn(LocalControlador.class)
+                                            .exibirMapa(local.getNome()))
+                            .withRel("Mapa")))
+            .collect(Collectors.toList());
+
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName("home/list");
+    mv.addObject("locais",locaisDTO);
+    return mv;
   }
 
   public ModelAndView exibirMapa(String nome) {
