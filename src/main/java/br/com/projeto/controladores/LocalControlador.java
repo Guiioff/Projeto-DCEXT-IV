@@ -45,9 +45,9 @@ public class LocalControlador {
     return this.localServico.exibirLocais();
   }
 
-//  @GetMapping("/mapa")
-//  @ResponseStatus(HttpStatus.OK)
-//  public ModelAndView exibirMapa(@RequestParam("nome") String nome) {
-//    return this.localServico.exibirMapa(nome);
-//  }
+  @GetMapping("/mapa")
+  @ResponseStatus(HttpStatus.OK)
+  public ModelAndView exibirMapa(@RequestParam("nome") String nome) {
+    return this.localServico.exibirMapa(nome);
+  }
 }

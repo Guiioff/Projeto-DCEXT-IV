@@ -22,8 +22,9 @@
             <td th:text="${local.nome}"></td>
             <td th:text="${local.descricao}"></td>
             <td>
-                <a th:href="${local.mapa.href}" target="_blank">Detalhes</a>
+                <a th:href="${'http://localhost:8080/local/ver-local?nome=' + local.nome}" target="_blank">Detalhes</a>
             </td>
+
         </tr>
         </tbody>
     </table>
