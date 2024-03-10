@@ -28,8 +28,12 @@ public class LocalControlador {
 
   @PostMapping(path = "/cadastrar", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
-  public UUID cadastrarLocalForm(@ModelAttribute @Valid LocalDTO dto) {
-    return this.localServico.cadastrarLocal(dto);
+  public ModelAndView cadastrarLocalForm(@ModelAttribute @Valid LocalDTO dto) {
+     this.localServico.cadastrarLocal(dto);
+
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName("home/sucesso");
+    return mv;
   }
 
   @GetMapping("/ver-local")

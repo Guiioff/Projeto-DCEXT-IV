@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
 
@@ -17,7 +18,11 @@ public class AvaliacaoControlador {
 
   @PostMapping("/publicar/{id}")
   @ResponseStatus(HttpStatus.CREATED)
-  public void avaliar(@ModelAttribute @Valid AvaliacaoDTO data, @PathVariable UUID id) {
+  public ModelAndView avaliar(@ModelAttribute @Valid AvaliacaoDTO data, @PathVariable UUID id) {
     this.avaliacaoServico.publicarAvaliacao(id, data);
+
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName("home/sucesso");
+    return mv;
   }
 }
