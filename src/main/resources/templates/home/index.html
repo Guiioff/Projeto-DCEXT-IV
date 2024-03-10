@@ -51,6 +51,21 @@
 <div>
     <h3 th:text="${local.nome}"></h3>
     <p th:text="${local.descricao}"></p>
+    <p th:text="${local.rua + ' ' + local.numero + ', ' + local.bairro}"></p>
+    <p th:text="${local.recursos}"></p>
+    <p th:text="${local.dataCadastro}"></p>
+    <p th:text="${local.autor}"></p>
+    <p th:text="${local.media}"></p>
+
+    <h4>Avaliações:</h4>
+    <ul th:if="${local.avaliacoes != null}">
+        <li th:each="avaliacao : ${local.avaliacoes}">
+            Nota: <span th:text="${avaliacao.nota}"></span><br/>
+            Comentário: <span th:text="${avaliacao.comentario}"></span><br/>
+            Data: <span th:text="${avaliacao.data}"></span><br/>
+            <hr/>
+        </li>
+    </ul>
 </div>
 
 
