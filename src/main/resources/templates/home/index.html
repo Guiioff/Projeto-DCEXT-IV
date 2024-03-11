@@ -5,15 +5,149 @@
     <meta name="viewport" content="width=width.advice, initial-scale=1.0">
     <title>Projeto mapa</title>
     <meta name="autor" content="Gui">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <style>
         #map{
-            height: 400px;
-            width: 740px;
+            height: auto;
+            width: 830px;
         }
     </style>
 </head>
-<body>
-<div id="map"></div>
+<body style ="font-family: 'lato', sans-serif; margin: 0">
+<div style="display:flex;
+            flex-direction:row;
+            gap: 1%">
+    <div id="map" ></div>
+
+    <div>
+        <div style="padding: 15px; margin-bottom: 10px">
+            <h2 style="font-size: 40px"
+                    th:text="${local.nome}"></h2>
+            <div style="display:flex;
+                        flex-direction: row;
+                        gap: 1%;
+                        font-size:17px;
+                        background-color: #fafafa;
+                        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                        padding: 0 15px;
+                        margin-bottom: 7px">
+                <p style="font-weight:bold">Descrição:</p>
+                <p th:text="${local.descricao}"></p>
+            </div>
+            <div style="display:flex;
+                        flex-direction: row;
+                        gap: 1%;
+                        font-size:17px;
+                        background-color: #fafafa;
+                        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                        padding: 0 15px;
+                        margin-bottom: 7px">
+                <p style="font-weight:bold">Endereço:</p>
+                <p th:text="${local.rua + ' ' + local.numero + ', ' + local.bairro}"></p>
+            </div>
+            <div style="display:flex;
+                        flex-direction: row;
+                        gap: 1%;
+                        font-size:17px;
+                        background-color: #fafafa;
+                        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                        padding: 0 15px;
+                        margin-bottom: 7px">
+                <p style="font-weight:bold">Data de Cadastro:</p>
+                <p th:text="${local.dataCadastro}"></p>
+            </div>
+            <div style="display:flex;
+                        flex-direction: row;
+                        gap: 1%;
+                        font-size:17px;
+                        background-color: #fafafa;
+                        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                        padding: 0 15px;
+                        margin-bottom: 7px">
+                <p style="font-weight:bold">Autor do Cadastro:</p>
+                <p th:text="${local.autor}"></p>
+            </div>
+            <div style="display:flex;
+                        flex-direction: row;
+                        gap: 1%;
+                        font-size:17px;
+                        background-color: #fafafa;
+                        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                        padding: 0 15px;
+                        margin-bottom: 7px">
+                <p style="font-weight:bold">Nota Média:</p>
+                <p th:text="${local.media}"></p>
+            </div>
+            <p th:text="${local.recursos}"></p>
+
+            <h4 style="font-size: 30px">
+                Avaliações:</h4>
+            <ul style=" list-style: none;
+                        font-size:17px;
+                        background-color: #fafafa;
+                        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                        padding: 15px 15px;
+                        margin-bottom: 7px"
+                th:if="${local.avaliacoes != null}">
+                <li th:each="avaliacao : ${local.avaliacoes}" >
+                    Nota: <span th:text="${avaliacao.nota}"></span><br/>
+                    Comentário: <span th:text="${avaliacao.comentario}"></span><br/>
+                    Data: <span th:text="${avaliacao.data}"></span><br/>
+                    <hr/>
+                </li>
+            </ul>
+        </div>
+
+        <form id="avaliacaoForm" th:action="@{'/avaliacao/publicar/' + ${local.id}}" method="post" onsubmit="return enviarAvaliacao()"
+              style="padding:0 15px">
+            <h4 style="font-size: 30px">Avaliar o Local:</h4>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1%">
+                <div style="display: flex;
+                            justify-content:space-between;
+                            background-color: #fafafa;
+                            box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                            font-size: 17px;
+                            padding: 17px 20px;
+                            gap: 1%;
+                            align-items: center">
+                    <label for="nota">Nota:</label>
+                    <input type="number" id="nota" name="nota" required>
+                </div>
+
+                <div style="display: flex;
+                            justify-content:space-between;
+                            background-color: #fafafa;
+                            box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                            font-size: 17px;
+                            padding: 17px 20px;
+                            gap: 1%;
+                            align-items: center">
+                    <label for="comentario">Comentário:</label>
+                    <textarea id="comentario" name="comentario" required></textarea>
+                </div>
+                <div style="display: flex;
+                            justify-content:space-between;
+                            background-color: #fafafa;
+                            box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                            font-size: 17px;
+                            padding: 17px 20px;
+                            gap: 1%;
+                            align-items: center">
+                    <label for="nomeAutor">Nome do Autor:</label>
+                    <input type="text" id="nomeAutor" name="nomeAutor" required>
+                </div>
+                <button style="border: none;
+                               background-color: #fafafa;
+                               box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                               font-size: 17px;"
+                        type="submit">Enviar Avaliação</button>
+            </div>
+        </form>
+        <div style="margin-bottom: 50px"></div>
+    </div>
+</div>
+
+
 
 <script th:inline="javascript">
 
@@ -48,39 +182,7 @@
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAhefUroNgMWN6d8pKFFFLPrrNM9aaMSc&callback=initMap" async defer></script>
 
-<form id="avaliacaoForm" th:action="@{'/avaliacao/publicar/' + ${local.id}}" method="post" onsubmit="return enviarAvaliacao()">
-    <h4>Avaliar o Local:</h4>
-    <label for="nota">Nota:</label>
-    <input type="number" id="nota" name="nota" required>
 
-    <label for="comentario">Comentário:</label>
-    <textarea id="comentario" name="comentario" required></textarea>
-
-    <label for="nomeAutor">Nome do Autor:</label>
-    <input type="text" id="nomeAutor" name="nomeAutor" required>
-
-    <button type="submit">Enviar Avaliação</button>
-</form>
-
-<div>
-    <h3 th:text="${local.nome}"></h3>
-    <p th:text="${local.descricao}"></p>
-    <p th:text="${local.rua + ' ' + local.numero + ', ' + local.bairro}"></p>
-    <p th:text="${local.recursos}"></p>
-    <p th:text="${local.dataCadastro}"></p>
-    <p th:text="${local.autor}"></p>
-    <p th:text="${local.media}"></p>
-
-    <h4>Avaliações:</h4>
-    <ul th:if="${local.avaliacoes != null}">
-        <li th:each="avaliacao : ${local.avaliacoes}">
-            Nota: <span th:text="${avaliacao.nota}"></span><br/>
-            Comentário: <span th:text="${avaliacao.comentario}"></span><br/>
-            Data: <span th:text="${avaliacao.data}"></span><br/>
-            <hr/>
-        </li>
-    </ul>
-</div>
 
 <script th:inline="javascript">
     async function enviarAvaliacao() {

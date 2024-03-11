@@ -19,7 +19,7 @@ public class ProjetoDcext4Application {
     SpringApplication.run(ProjetoDcext4Application.class, args);
   }
 
-  /*
+/*
   @Bean
   public CommandLineRunner commandLineRunner(
       @Autowired UsuarioRepositorio repositorio, @Autowired PasswordEncoder passwordEncoder) {

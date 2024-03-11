@@ -3,47 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=width.advice, initial-scale=1.0">
-    <title>LISTA DE LOCAIS</title>
+        <title>Onde me Ouvem</title>
     <meta name="autor" content="Gui">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 </head>
-<body>
-<h2>Lista de Locais</h2>
-
-<!-- Adicione a verificação se houve um redirecionamento após o cadastro -->
-<div th:if="${param.success}">
-    <p style="color: green;">Cadastro realizado com sucesso!</p>
-</div>
-
-<form th:action="@{/local/cadastrar}" method="post">
-    <label for="nome">Nome:</label>
-    <input type="text" id="nome" name="nome" required>
-
-    <label for="descricao">Descrição:</label>
-    <input type="text" id="descricao" name="descricao" required>
-
-    <label for="rua">Rua:</label>
-    <input type="text" id="rua" name="rua" required>
-
-    <label for="numero">Número:</label>
-    <input type="number" id="numero" name="numero" required>
-
-    <label for="bairro">Bairro:</label>
-    <input type="text" id="bairro" name="bairro" required>
-
-    <button type="submit">Cadastrar</button>
-</form>
-
-<table>
+<body style ="font-family: 'lato', sans-serif; margin: 0">
+<h1 style="font-size: 60px;
+               margin: 0 0 20px 0;
+               text-align: center;
+               background-color: #95A5A6;
+               color: #ffffff">
+    ONDE ME OUVEM</h1>
+<h2 style="font-size: 40px;
+              margin: 20px 0;
+              text-align: center;">
+    Lista de Locais</h2>
+<table style="  width: 1000px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    text-indent: center;">
     <thead>
-    <tr>
-        <th>Nome</th>
+    <tr style=" border-radius: 30px;
+                    background-color: #95A5A6;
+                    font-size: 25px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.03em;">
+        <th style="
+                        padding: 25px 30px;
+                        margin-bottom: 25px">Nome</th>
         <th>Descrição</th>
+        <th>Saiba Mais</th>
         <!-- Adicione mais colunas conforme necessário -->
     </tr>
     </thead>
     <tbody>
-    <tr th:each="local : ${locais}">
-        <td th:text="${local.nome}"></td>
+    <tr style="background-color: #fafafa;
+            box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+            font-size: 22px;
+            text-align: center;"
+        th:each="local : ${locais}">
+        <td style="padding: 30px 15px;
+                        margin-bottom: 15px;
+                        "
+            th:text="${local.nome}"></td>
         <td th:text="${local.descricao}"></td>
         <td>
             <a th:href="${'/local/ver-local?nome=' + local.nome}" target="_blank">Detalhes</a>
@@ -51,6 +55,89 @@
     </tr>
     </tbody>
 </table>
+
+<div style = "margin: 100px"></div>
+<h2 style="font-size: 40px;
+              margin: 20px 0;
+              text-align: center;">
+    Adicionar Local</h2>
+
+<form th:action="@{/local/cadastrar}" method="post"
+      style="display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 50px;
+            width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 10px;
+            padding-right: 10px;">
+    <div style="display: flex;
+                justify-content:space-between;
+                background-color: #fafafa;
+                box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                font-size: 22px;
+                padding: 25px 30px;
+                gap: 5%">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+    </div>
+
+    <div style="display: flex;
+                justify-content:space-between;
+                background-color: #fafafa;
+                box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                font-size: 22px;
+                padding: 25px 30px;
+                gap: 5%">
+        <label for="descricao">Descrição:</label>
+        <input type="text" id="descricao" name="descricao" required>
+    </div>
+
+    <div style="display: flex;
+                justify-content:space-between;
+                background-color: #fafafa;
+                box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                font-size: 22px;
+                padding: 25px 30px;
+                gap: 5%">
+        <label for="rua">Rua:</label>
+        <input type="text" id="rua" name="rua" required>
+    </div>
+
+    <div style="display: flex;
+                justify-content:space-between;
+                background-color: #fafafa;
+                box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                font-size: 22px;
+                padding: 25px 30px;
+                gap: 5%">
+        <label for="numero">Número:</label>
+        <input type="number" id="numero" name="numero" required>
+    </div>
+
+    <div style="display: flex;
+                justify-content:space-between;
+                background-color: #fafafa;
+                box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+                font-size: 22px;
+                padding: 25px 30px;
+                gap: 5%">
+        <label for="bairro">Bairro:</label>
+        <input type="text" id="bairro" name="bairro" required>
+    </div>
+
+    <button type="submit"
+            style="border: none;
+               background-color: #fafafa;
+               box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+               font-size: 22px;">
+        Cadastrar</button>
+
+
+</form>
+
+
+<div style = "margin: 100px"></div>
 
 </body>
 </html>
